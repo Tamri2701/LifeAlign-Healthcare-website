@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password - Healthcare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #b8d2bb;
+        }
+        .container {
+            background: #d1ded2;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 1rem;
+            width: 150px;
+        }
+        .container h1 {
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            color: #2e7d32;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #777;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .reset-btn {
+            background-color: #2e7d32;
+            color: #fff;
+        }
+        .reset-btn:hover {
+            background-color: #1b5e20;
+        }
+        .footer {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #777;
+        }
+        .footer a {
+            color: #2e7d32;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+                
+        <!-- Header -->
+        <h1>Reset Password</h1>
+
+        <!-- Send OTP Section -->
+        <form id="otp-form" onsubmit="sendOtp(event)">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your registered email" required>
+            </div>
+            <button type="submit" class="btn reset-btn">Send OTP</button>
+        </form>
+
+        <!-- OTP Section -->
+        <div id="otp-section" style="display: none;">
+            <h1>Enter OTP</h1>
+            <form id="otp-verify-form" onsubmit="verifyOtp(event)">
+                <div class="form-group">
+                    <label for="otp">OTP</label>
+                    <input type="text" id="otp" name="otp" placeholder="Enter OTP" required>
+                </div>
+                <button type="submit" class="btn reset-btn">Verify OTP</button>
+            </form>
+        </div>
+
+        <!-- Password Reset Section -->
+        <div id="password-section" style="display: none;">
+            <h1>Set New Password</h1>
+            <form id="password-form" onsubmit="resetPassword(event)">
+                <div class="form-group">
+                    <label for="new-password">New Password</label>
+                    <input type="password" id="new-password" name="new-password" placeholder="Enter new password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm new password" required>
+                </div>
+                <button type="submit" class="btn reset-btn">Reset Password</button>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Remember your password? <a href="login.php">Login</a></p>
+        </div>
+    </div>
+
+    <script>
+        const oldPassword = "OldPassword123!"; // Replace this with the actual old password from backend.
+
+        function generateOtp() {
+            return Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
+        }
+
+        function sendOtp(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const otp = generateOtp();
+            console.log("Generated OTP:", otp); // For debugging
+
+            // Save OTP to localStorage
+            localStorage.setItem("otp", otp);
+
+            // Display SweetAlert with OTP
+            Swal.fire({
+                title: 'OTP Sent!',
+                text: `Your OTP is ${otp}`,
+                icon: 'success',
+                confirmButtonColor: '#2e7d32'
+            }).then(() => {
+                // Show the OTP input section after SweetAlert
+                document.getElementById("otp-section").style.display = "block";
+            });
+        }
+
+        function verifyOtp(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const enteredOtp = document.getElementById("otp").value;
+            const storedOtp = localStorage.getItem("otp");
+
+            if (enteredOtp === storedOtp) {
+                // OTP is correct
+                Swal.fire({
+                    title: 'OTP Verified!',
+                    text: 'You can now reset your password.',
+                    icon: 'success',
+                    confirmButtonColor: '#2e7d32'
+                }).then(() => {
+                    // Clear OTP from localStorage
+                    localStorage.removeItem("otp");
+
+                    // Show the password reset section
+                    document.getElementById("password-section").style.display = "block";
+
+                    // Hide the OTP section
+                    document.getElementById("otp-section").style.display = "none";
+                });
+            } else {
+                // OTP is incorrect
+                Swal.fire({
+                    title: 'Invalid OTP',
+                    text: 'Please enter the correct OTP.',
+                    icon: 'error',
+                    confirmButtonColor: '#d32f2f'
+                });
+            }
+        }
+
+        function resetPassword(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const newPassword = document.getElementById("new-password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+
+            const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+            if (newPassword === oldPassword) {
+                Swal.fire({
+                    title: 'Try Another Password',
+                    text: 'The new password cannot be the same as the old password.',
+                    icon: 'error',
+                    confirmButtonColor: '#d32f2f'
+                });
+                return;
+            }
+
+            if (!passwordPattern.test(newPassword)) {
+                Swal.fire({
+                    title: 'Weak Password',
+                    text: 'Password must include at least 1 uppercase letter, 1 lowercase letter, 1 number, 1 special character, and be at least 8 characters long.',
+                    icon: 'warning',
+                    confirmButtonColor: '#d32f2f'
+                });
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                Swal.fire({
+                    title: 'Password Mismatch',
+                    text: 'The passwords do not match. Please try again.',
+                    icon: 'error',
+                    confirmButtonColor: '#d32f2f'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Password Updated!',
+                text: 'Your password has been successfully updated.',
+                icon: 'success',
+                confirmButtonColor: '#2e7d32'
+            }).then(() => {
+                // Redirect to the login page
+                window.location.href = 'login.html';
+            });
+        }
+    </script>
+</body>
+</html>
