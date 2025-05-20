@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #b8d2bb;
+        }
+        .container {
+            background: #d1ded2;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 1.5rem;
+            margin-top: 5vh;
+            align-items: center;
+            max-width: 200px;
+        }
+        .logo-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #e8f5e9;
+            border-radius: 8px 0 0 8px;
+        }
+        .logo-section img {
+            max-width: 70%;
+            height: auto;
+        }
+        .form-section {
+            flex: 2;
+            padding: 1.5rem;
+        }
+        .form-section h1 {
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            color: #2e7d32;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #388e3c;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .captcha-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f8e9;
+            padding: 5px 10px;
+            margin: 1rem auto;
+            border: 2px dashed #4caf50;
+            border-radius: 6px;
+            width: fit-content;
+        }
+        .captcha-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2e7d32;
+            letter-spacing: 2px;
+            margin-right: 10px;
+        }
+        .captcha-refresh {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #388e3c;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .captcha-refresh:hover {
+            color: #1b5e20;
+        }
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .login-btn {
+            background-color: #2e7d32;
+            color: #fff;
+        }
+        .login-btn:hover {
+            background-color: #1b5e20;
+        }
+        .divider {
+            margin: 1.5rem 0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #757575;
+        }
+        .google-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
+            border-radius: 50%;
+            background-color: #ffffff;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            box-shadow: 0 2px 4px #777(177, 170, 170, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .google-btn:hover {
+            transform: scale(1.1);
+            border-color: #5be84c;
+        }
+        .already-signed-up {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color :#5d5858;
+        }
+        .already-signed-up a {
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .already-signed-up a:hover {
+            text-decoration: underline;
+        }
+
+        .toggle-password {
+            margin-top: 0.5rem;
+            cursor: pointer;
+            color: #2e7d32;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <img src="newlogo.png" alt="LifeAlign Logo" class="logo">
+        <div class="form-section">
+            <h1>Register</h1>
+            <form id="register-form" action="signup.php" method="POST" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="new-email">Email Address</label>
+                    <input type="email" id="new-email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-password">Password</label>
+                    <input type="password" id="new-password" name="password" placeholder="Enter your password" required>
+                    <div class="toggle-password" id="togglePassword">Show Password</div>
+                </div>
+                <div class="captcha-box">
+                    <span class="captcha-text" id="captcha">
+                        <img src="captcha.php" alt="Captcha" />
+                    </span>
+                    <button type="button" class="captcha-refresh" onclick="generateCaptcha()">&#x21bb;</button>
+                </div>
+                <div class="form-group">
+                    <label for="captcha-input">Enter Captcha</label>
+                    <input type="text" id="captcha-input" name="captcha" placeholder="Enter the captcha" required>
+                </div>
+                <button type="submit" class="btn login-btn">Register</button>
+            </form>
+            <div class="divider">or you can register with</div>
+            <div class="google-btn" onclick="window.location.href='/auth/google'">
+                <a href="#"><i class="fa-brands fa-google" style="color: #0a0b0a;"></i></a>
+            </div>
+            <div class="already-signed-up">
+                Already have an account? <a href="login.html">Log in here</a>.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCaptcha = "";
+
+        function generateCaptcha() {
+            const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            currentCaptcha = Array.from({ length: 6 }, () => characters[Math.floor(Math.random() * characters.length)]).join("");
+            document.getElementById("captcha").textContent = currentCaptcha;
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("new-email").value;
+            const password = document.getElementById("new-password").value;
+            const captchaInput = document.getElementById("captcha-input").value;
+
+            // Password validation (must include uppercase, lowercase, number, special char, and minimum length of 6)
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+
+            if (!passwordRegex.test(password)) {
+                Swal.fire({
+                    title: 'Password Invalid',
+                    text: 'Password must be at least 6 characters long, contain at least one uppercase letter, one lowercase letter, and one special character.',
+                    icon: 'error',
+                    confirmButtonColor: '#d32f2f'
+                });
+                return;
+            }
+
+            if (captchaInput !== currentCaptcha) {
+                Swal.fire({
+                    title: 'Captcha Incorrect',
+                    text: 'Please enter the correct captcha.',
+                    icon: 'error',
+                    confirmButtonColor: '#d32f2f'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Registration Successful',
+                text: 'You have been successfully registered. Redirecting to login page...',
+                icon: 'success',
+                confirmButtonColor: '#2e7d32'
+            }).then(() => {
+                window.location.href = "login.html";
+            });
+        }
+
+        // Show/Hide Password
+        const passwordInput = document.getElementById('new-password');
+        const togglePassword = document.getElementById('togglePassword');
+
+        togglePassword.addEventListener('click', () => {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                togglePassword.textContent = 'Hide Password';
+            } else {
+                passwordInput.type = 'password';
+                togglePassword.textContent = 'Show Password';
+            }
+        });
+
+        generateCaptcha();
+    </script>
+</body>
+</html>
