@@ -1,6 +1,6 @@
 # LifeAlign-Healthcare-website
 
-What is LifeAlign
+What is LifeAlign?
 Integrates doctor appointments, organ donation, vaccination scheduling, blogs, and charity donations.
 
 Purpose:
